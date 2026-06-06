@@ -4,526 +4,868 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mehroz Mahmood — Flutter Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --card: #16161f;
-    --border: rgba(255,255,255,0.07);
-    --accent: #4f8ef7;
-    --accent2: #7c5cfc;
-    --accent3: #00e5b0;
-    --text: #f0f0f5;
-    --muted: #7a7a8c;
-    --highlight: rgba(79,142,247,0.12);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060608;
+  --surface:#0d0d12;
+  --card:#111118;
+  --border:rgba(255,255,255,0.06);
+  --border-hover:rgba(255,255,255,0.15);
+  --blue:#4f7cff;
+  --blue-dim:rgba(79,124,255,0.12);
+  --green:#00e5a0;
+  --green-dim:rgba(0,229,160,0.1);
+  --purple:#9b6dff;
+  --orange:#ff8c42;
+  --text:#f0f0f8;
+  --text-secondary:#8888a0;
+  --text-tertiary:#44445a;
+  --font-display:'Clash Display',sans-serif;
+  --font-body:'Cabinet Grotesk',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  
+}
 
-  /* Grid noise background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
 
-  /* Glow orbs */
-  .orb1 {
-    position: fixed; top: -200px; left: -100px;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
-  }
-  .orb2 {
-    position: fixed; bottom: -150px; right: -100px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(124,92,252,0.10) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
-  }
 
-  /* Nav */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 1.2rem 2rem;
-    display: flex; justify-content: space-between; align-items: center;
-    background: rgba(10,10,15,0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800; font-size: 1.1rem;
-    color: var(--text);
-    letter-spacing: -0.02em;
-  }
-  .nav-logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 2rem; }
-  .nav-links a {
-    color: var(--muted); text-decoration: none;
-    font-size: 0.875rem; font-weight: 400;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
+/* Noise texture overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:0.4;
+}
 
-  /* Hero */
-  .hero {
-    position: relative; z-index: 1;
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: flex-start;
-    padding: 8rem 2rem 4rem;
-    max-width: 900px; margin: 0 auto;
-  }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--highlight);
-    border: 1px solid rgba(79,142,247,0.25);
-    border-radius: 99px;
-    padding: 6px 16px;
-    font-size: 0.8rem; color: var(--accent);
-    margin-bottom: 2rem;
-    animation: fadeUp 0.6s ease both;
-  }
-  .hero-tag::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--accent3);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
-  }
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(3rem, 8vw, 5.5rem);
-    font-weight: 800;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-  .hero h1 .line2 { color: var(--accent); }
-  .hero h1 .line3 {
-    -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-    color: transparent;
-  }
-  .hero-desc {
-    font-size: 1.1rem; color: var(--muted);
-    max-width: 520px; line-height: 1.7;
-    margin-bottom: 2.5rem;
-    animation: fadeUp 0.6s 0.2s ease both;
-  }
-  .hero-btns {
-    display: flex; gap: 1rem; flex-wrap: wrap;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--accent);
-    color: #fff; font-weight: 500;
-    padding: 0.8rem 1.8rem; border-radius: 8px;
-    text-decoration: none; font-size: 0.9rem;
-    transition: all 0.2s; border: none; cursor: pointer;
-  }
-  .btn-primary:hover { background: #3a7ae8; transform: translateY(-2px); }
-  .btn-outline {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: transparent;
-    color: var(--text); font-weight: 500;
-    padding: 0.8rem 1.8rem; border-radius: 8px;
-    text-decoration: none; font-size: 0.9rem;
-    border: 1px solid var(--border);
-    transition: all 0.2s; cursor: pointer;
-  }
-  .btn-outline:hover { border-color: rgba(255,255,255,0.2); background: var(--card); transform: translateY(-2px); }
+/* Ambient glow blobs */
+.blob{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+.blob-1{width:700px;height:700px;top:-200px;left:-200px;background:radial-gradient(circle,rgba(79,124,255,0.08) 0%,transparent 70%);}
+.blob-2{width:600px;height:600px;bottom:-100px;right:-150px;background:radial-gradient(circle,rgba(155,109,255,0.07) 0%,transparent 70%);}
+.blob-3{width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(0,229,160,0.04) 0%,transparent 70%);}
 
-  /* Stats row */
-  .stats {
-    display: flex; gap: 3rem; margin-top: 4rem;
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-  .stat-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 2rem; font-weight: 700;
-    color: var(--text);
-  }
-  .stat-num span { color: var(--accent); }
-  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+/* Nav */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:0 2.5rem;height:64px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(6,6,8,0.7);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:var(--font-mono);
+  font-size:0.85rem;color:var(--text-secondary);
+  letter-spacing:0.05em;
+}
+.nav-logo span{color:var(--blue);}
+.nav-links{display:flex;gap:2.5rem;align-items:center;}
+.nav-links a{
+  font-size:0.8rem;color:var(--text-secondary);
+  text-decoration:none;letter-spacing:0.08em;
+  text-transform:uppercase;font-weight:500;
+  transition:color 0.2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:1px;background:var(--blue);
+  transform:scaleX(0);transition:transform 0.3s;
+}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-available{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:0.72rem;
+  color:var(--green);letter-spacing:0.05em;
+}
+.nav-dot{
+  width:6px;height:6px;background:var(--green);
+  border-radius:50%;animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* Hero */
+.hero{
+  position:relative;z-index:2;
+  min-height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:4rem;
+  padding:8rem 2.5rem 4rem;
+  max-width:1200px;margin:0 auto;
+}
+.hero-left{opacity:0;animation:fadeSlideUp 0.9s 0.2s ease forwards;}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--border-hover);border-radius:4px;
+  padding:8px 16px;margin-bottom:2rem;
+  font-family:var(--font-mono);font-size:0.72rem;
+  color:var(--text-secondary);letter-spacing:0.08em;
+}
+.hero-tag-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(3.2rem,6vw,5.5rem);
+  font-weight:700;line-height:1.0;
+  letter-spacing:-0.03em;
+  margin-bottom:1.5rem;
+}
+.hero h1 .name-first{display:block;color:var(--text);}
+.hero h1 .name-last{
+  display:block;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero h1 .role{
+  display:block;font-size:0.45em;
+  color:var(--text-secondary);font-weight:400;
+  letter-spacing:0.02em;margin-top:0.5rem;
+  -webkit-text-fill-color:var(--text-secondary);
+}
+.hero-desc{
+  font-size:1rem;color:var(--text-secondary);
+  line-height:1.8;max-width:480px;
+  margin-bottom:2.5rem;font-weight:300;
+}
+.hero-desc strong{color:var(--text);font-weight:500;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--blue);color:#fff;
+  font-family:var(--font-body);font-weight:600;font-size:0.875rem;
+  padding:0.85rem 1.75rem;border-radius:6px;
+  text-decoration:none;transition:all 0.25s;
+  border:1px solid transparent;
+}
+.btn-primary:hover{background:transparent;border-color:var(--blue);color:var(--blue);transform:translateY(-3px);}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:10px;
+  background:transparent;color:var(--text-secondary);
+  font-family:var(--font-body);font-weight:500;font-size:0.875rem;
+  padding:0.85rem 1.75rem;border-radius:6px;
+  text-decoration:none;transition:all 0.25s;
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:var(--border-hover);color:var(--text);transform:translateY(-3px);}
+.hero-stats{
+  display:flex;gap:2.5rem;
+  padding-top:2rem;border-top:1px solid var(--border);
+}
+.stat-num{
+  font-family:var(--font-display);
+  font-size:2rem;font-weight:700;color:var(--text);
+}
+.stat-num sup{font-size:1rem;color:var(--blue);}
+.stat-label{font-size:0.75rem;color:var(--text-secondary);margin-top:4px;letter-spacing:0.05em;}
 
-  /* Sections */
-  section {
-    position: relative; z-index: 1;
-    max-width: 900px; margin: 0 auto;
-    padding: 5rem 2rem;
-  }
-  .section-label {
-    font-size: 0.75rem; font-weight: 600;
-    color: var(--accent); letter-spacing: 0.15em;
-    text-transform: uppercase; margin-bottom: 0.75rem;
-  }
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 700; letter-spacing: -0.02em;
-    margin-bottom: 3rem;
-  }
+/* Hero right - visual card */
+.hero-right{
+  opacity:0;animation:fadeSlideUp 0.9s 0.4s ease forwards;
+  display:flex;justify-content:center;align-items:center;
+}
+.profile-card{
+  position:relative;
+  width:340px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:2rem;
+  overflow:hidden;
+}
+.profile-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));
+}
+.profile-card-glow{
+  position:absolute;top:-60px;right:-60px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(79,124,255,0.15) 0%,transparent 70%);
+}
+.profile-avatar{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.8rem;font-weight:700;
+  color:#fff;margin-bottom:1.25rem;border:2px solid var(--border-hover);
+}
+.profile-name{
+  font-family:var(--font-display);
+  font-size:1.25rem;font-weight:600;margin-bottom:0.25rem;
+}
+.profile-role{font-size:0.8rem;color:var(--blue);margin-bottom:1.25rem;font-family:var(--font-mono);}
+.profile-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem;}
+.profile-tag{
+  font-size:0.7rem;padding:4px 10px;border-radius:4px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  color:var(--text-secondary);font-family:var(--font-mono);
+}
+.profile-location{
+  display:flex;align-items:center;gap:8px;
+  font-size:0.78rem;color:var(--text-secondary);
+  padding-top:1rem;border-top:1px solid var(--border);
+}
+.profile-stack{margin-top:1rem;}
+.stack-label{font-size:0.68rem;color:var(--text-tertiary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;font-family:var(--font-mono);}
+.stack-bars{display:flex;flex-direction:column;gap:8px;}
+.stack-bar{display:flex;align-items:center;gap:10px;}
+.stack-bar-name{font-size:0.72rem;color:var(--text-secondary);width:60px;font-family:var(--font-mono);}
+.stack-bar-track{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:99px;overflow:hidden;}
+.stack-bar-fill{height:100%;border-radius:99px;animation:barGrow 1.5s ease forwards;width:0;}
+.stack-bar-fill.blue{background:var(--blue);}
+.stack-bar-fill.purple{background:var(--purple);}
+.stack-bar-fill.green{background:var(--green);}
+.stack-bar-fill.orange{background:var(--orange);}
+@keyframes barGrow{to{width:var(--w)}}
 
-  /* Skills */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-  }
-  .skill-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s;
-    position: relative; overflow: hidden;
-  }
-  .skill-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .skill-card:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-4px); }
-  .skill-card:hover::before { opacity: 1; }
-  .skill-icon {
-    font-size: 1.8rem; margin-bottom: 0.75rem;
-  }
-  .skill-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 600; font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
-  .tag {
-    font-size: 0.72rem; padding: 3px 10px;
-    background: rgba(79,142,247,0.1);
-    color: var(--accent);
-    border-radius: 99px;
-    border: 1px solid rgba(79,142,247,0.2);
-  }
+@keyframes fadeSlideUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
-  /* Project */
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2.5rem;
-    position: relative; overflow: hidden;
-    transition: all 0.3s;
-  }
-  .project-card:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-4px); }
-  .project-card::after {
-    content: '';
-    position: absolute; top: -80px; right: -80px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(79,142,247,0.08) 0%, transparent 70%);
-  }
-  .project-header {
-    display: flex; justify-content: space-between;
-    align-items: flex-start; margin-bottom: 1.25rem;
-  }
-  .project-badge {
-    background: rgba(0,229,176,0.1);
-    color: var(--accent3);
-    font-size: 0.75rem; padding: 4px 12px;
-    border-radius: 99px;
-    border: 1px solid rgba(0,229,176,0.2);
-    font-weight: 500;
-  }
-  .project-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.6rem; font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-  .project-sub { color: var(--accent); font-size: 0.875rem; margin-bottom: 1rem; }
-  .project-desc { color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
-  .project-features {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 0.6rem; margin-bottom: 1.5rem;
-  }
-  .feature-item {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 0.875rem; color: var(--muted);
-  }
-  .feature-item::before {
-    content: '';
-    width: 5px; height: 5px;
-    background: var(--accent3);
-    border-radius: 50%; flex-shrink: 0;
-  }
+/* Section wrapper */
+.section{
+  position:relative;z-index:2;
+  max-width:1200px;margin:0 auto;
+  padding:6rem 2.5rem;
+}
+.section-eyebrow{
+  font-family:var(--font-mono);font-size:0.72rem;
+  color:var(--blue);letter-spacing:0.15em;
+  text-transform:uppercase;margin-bottom:0.75rem;
+}
+.section-heading{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:700;letter-spacing:-0.02em;
+  margin-bottom:1rem;
+}
+.section-sub{
+  color:var(--text-secondary);font-size:1rem;
+  line-height:1.7;max-width:560px;font-weight:300;
+}
+.section-divider{
+  border:none;border-top:1px solid var(--border);
+  margin:0 2.5rem;
+}
 
-  /* Contact */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem; margin-bottom: 2rem;
-  }
-  .contact-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px; padding: 1.25rem;
-    display: flex; align-items: center; gap: 1rem;
-    text-decoration: none; color: var(--text);
-    transition: all 0.3s;
-  }
-  .contact-card:hover { border-color: rgba(79,142,247,0.3); transform: translateY(-3px); }
-  .contact-icon {
-    width: 42px; height: 42px;
-    background: var(--highlight);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; flex-shrink: 0;
-  }
-  .contact-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; }
-  .contact-value { font-size: 0.875rem; font-weight: 500; }
+/* Skills */
+.skills-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1.5rem;margin-top:3rem;
+}
+.skill-block{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:1.75rem;
+  transition:all 0.35s;position:relative;overflow:hidden;
+}
+.skill-block::after{
+  content:'';position:absolute;
+  inset:0;border-radius:12px;
+  background:linear-gradient(135deg,rgba(79,124,255,0.03),transparent);
+  opacity:0;transition:opacity 0.35s;
+}
+.skill-block:hover{border-color:rgba(79,124,255,0.2);transform:translateY(-6px);}
+.skill-block:hover::after{opacity:1;}
+.skill-block-icon{
+  font-size:1.75rem;margin-bottom:1rem;
+  display:inline-block;
+}
+.skill-block-title{
+  font-family:var(--font-display);font-size:1.1rem;
+  font-weight:600;margin-bottom:0.5rem;
+}
+.skill-block-desc{
+  font-size:0.85rem;color:var(--text-secondary);
+  line-height:1.6;margin-bottom:1rem;font-weight:300;
+}
+.skill-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.pill{
+  font-size:0.7rem;padding:4px 12px;border-radius:99px;
+  font-family:var(--font-mono);
+  background:rgba(79,124,255,0.08);
+  color:rgba(79,124,255,0.9);
+  border:1px solid rgba(79,124,255,0.15);
+  transition:all 0.2s;
+}
+.pill:hover{background:rgba(79,124,255,0.15);border-color:rgba(79,124,255,0.3);}
+.pill.green{background:rgba(0,229,160,0.08);color:rgba(0,229,160,0.9);border-color:rgba(0,229,160,0.15);}
+.pill.green:hover{background:rgba(0,229,160,0.15);border-color:rgba(0,229,160,0.3);}
+.pill.purple{background:rgba(155,109,255,0.08);color:rgba(155,109,255,0.9);border-color:rgba(155,109,255,0.15);}
+.pill.orange{background:rgba(255,140,66,0.08);color:rgba(255,140,66,0.9);border-color:rgba(255,140,66,0.15);}
 
-  /* Available badge */
-  .available {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(0,229,176,0.08);
-    border: 1px solid rgba(0,229,176,0.2);
-    border-radius: 99px; padding: 10px 20px;
-    font-size: 0.875rem; color: var(--accent3);
-    margin-bottom: 2rem;
-  }
-  .available::before {
-    content: '';
-    width: 8px; height: 8px;
-    background: var(--accent3);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
+/* Project */
+.project-showcase{
+  margin-top:3rem;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  transition:all 0.35s;
+}
+.project-showcase:hover{border-color:rgba(79,124,255,0.2);}
+.project-top-bar{
+  height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));
+}
+.project-body{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;
+}
+.project-info{
+  padding:3rem;border-right:1px solid var(--border);
+}
+.project-badge-row{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.project-badge{
+  font-family:var(--font-mono);font-size:0.68rem;
+  padding:4px 12px;border-radius:4px;
+  letter-spacing:0.05em;
+}
+.badge-live{background:rgba(0,229,160,0.1);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+.badge-flutter{background:rgba(79,124,255,0.1);color:var(--blue);border:1px solid rgba(79,124,255,0.2);}
+.badge-firebase{background:rgba(255,140,66,0.1);color:var(--orange);border:1px solid rgba(255,140,66,0.2);}
+.project-title{
+  font-family:var(--font-display);
+  font-size:2.2rem;font-weight:700;
+  letter-spacing:-0.02em;margin-bottom:0.5rem;
+}
+.project-subtitle{
+  font-family:var(--font-mono);font-size:0.78rem;
+  color:var(--blue);margin-bottom:1.25rem;
+}
+.project-desc{
+  font-size:0.9rem;color:var(--text-secondary);
+  line-height:1.8;margin-bottom:2rem;font-weight:300;
+}
+.project-features-list{
+  display:flex;flex-direction:column;gap:10px;
+}
+.project-feature{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:0.85rem;color:var(--text-secondary);
+}
+.feature-dot{
+  width:5px;height:5px;background:var(--blue);
+  border-radius:50%;flex-shrink:0;margin-top:8px;
+}
+.project-visual{
+  padding:3rem;display:flex;
+  flex-direction:column;justify-content:center;gap:1.5rem;
+}
+.tech-item{
+  display:flex;align-items:center;gap:1rem;
+  padding:1rem;background:rgba(255,255,255,0.02);
+  border:1px solid var(--border);border-radius:10px;
+  transition:all 0.25s;
+}
+.tech-item:hover{border-color:var(--border-hover);background:rgba(255,255,255,0.04);}
+.tech-icon{font-size:1.5rem;width:44px;text-align:center;}
+.tech-name{font-size:0.85rem;font-weight:500;}
+.tech-desc{font-size:0.75rem;color:var(--text-secondary);margin-top:2px;}
 
-  /* Footer */
-  footer {
-    position: relative; z-index: 1;
-    text-align: center;
-    padding: 2rem;
-    border-top: 1px solid var(--border);
-    color: var(--muted); font-size: 0.8rem;
-  }
+/* Services */
+.services-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.25rem;margin-top:3rem;
+}
+.service-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:2rem;
+  transition:all 0.35s;position:relative;
+  overflow:hidden;
+}
+.service-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;transform:scaleX(0);transition:transform 0.35s;
+}
+.service-card.s1::before{background:var(--blue);}
+.service-card.s2::before{background:var(--purple);}
+.service-card.s3::before{background:var(--green);}
+.service-card.s4::before{background:var(--orange);}
+.service-card.s5::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.service-card:hover{transform:translateY(-6px);border-color:var(--border-hover);}
+.service-card:hover::before{transform:scaleX(1);}
+.service-icon{font-size:2rem;margin-bottom:1.25rem;display:block;}
+.service-title{
+  font-family:var(--font-display);font-size:1.05rem;
+  font-weight:600;margin-bottom:0.6rem;
+}
+.service-desc{
+  font-size:0.82rem;color:var(--text-secondary);
+  line-height:1.7;font-weight:300;
+}
 
-  /* Divider */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0 2rem;
-  }
+/* Contact */
+.contact-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;margin-top:3rem;align-items:start;
+}
+.contact-left h3{
+  font-family:var(--font-display);
+  font-size:1.6rem;font-weight:600;
+  margin-bottom:1rem;letter-spacing:-0.02em;
+}
+.contact-left p{
+  font-size:0.9rem;color:var(--text-secondary);
+  line-height:1.8;margin-bottom:2rem;font-weight:300;
+}
+.contact-links{display:flex;flex-direction:column;gap:1rem;}
+.contact-link{
+  display:flex;align-items:center;gap:1rem;
+  padding:1.25rem;background:var(--card);
+  border:1px solid var(--border);border-radius:10px;
+  text-decoration:none;color:var(--text);
+  transition:all 0.3s;
+}
+.contact-link:hover{border-color:var(--border-hover);transform:translateX(6px);}
+.contact-link-icon{
+  width:40px;height:40px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.icon-email{background:rgba(79,124,255,0.12);}
+.icon-linkedin{background:rgba(0,119,181,0.12);}
+.icon-github{background:rgba(255,255,255,0.06);}
+.contact-link-label{font-size:0.7rem;color:var(--text-secondary);margin-bottom:2px;font-family:var(--font-mono);letter-spacing:0.05em;}
+.contact-link-value{font-size:0.875rem;font-weight:500;}
+.contact-right{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:2.5rem;
+}
+.contact-right h4{
+  font-family:var(--font-display);font-size:1.1rem;
+  font-weight:600;margin-bottom:1.5rem;
+}
+.info-row{
+  display:flex;justify-content:space-between;
+  align-items:center;padding:0.85rem 0;
+  border-bottom:1px solid var(--border);
+  font-size:0.85rem;
+}
+.info-row:last-child{border-bottom:none;}
+.info-key{color:var(--text-secondary);font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.05em;}
+.info-val{color:var(--text);font-weight:500;}
+.info-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.75rem;padding:4px 10px;border-radius:99px;
+  background:rgba(0,229,160,0.1);color:var(--green);
+  border:1px solid rgba(0,229,160,0.2);
+}
+.info-badge::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
 
-  @media (max-width: 600px) {
-    .nav-links { display: none; }
-    .project-features { grid-template-columns: 1fr; }
-    .stats { gap: 1.5rem; }
-  }
+/* Footer */
+footer{
+  position:relative;z-index:2;
+  text-align:center;padding:2.5rem;
+  border-top:1px solid var(--border);
+}
+.footer-inner{
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:1200px;margin:0 auto;
+  font-size:0.78rem;color:var(--text-tertiary);
+  font-family:var(--font-mono);
+}
+.footer-logo{color:var(--text-secondary);}
+.footer-logo span{color:var(--blue);}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:7rem 1.5rem 3rem;}
+  .hero-right{display:none;}
+  .skills-layout{grid-template-columns:1fr;}
+  .project-body{grid-template-columns:1fr;}
+  .project-info{border-right:none;border-bottom:1px solid var(--border);}
+  .services-grid{grid-template-columns:1fr 1fr;}
+  .contact-layout{grid-template-columns:1fr;}
+  .footer-inner{flex-direction:column;gap:0.5rem;}
+  nav{padding:0 1.5rem;}
+  .section{padding:4rem 1.5rem;}
+}
+@media(max-width:600px){
+  .services-grid{grid-template-columns:1fr;}
+  .hero-stats{gap:1.5rem;}
+}
 </style>
 </head>
 <body>
 
-<div class="orb1"></div>
-<div class="orb2"></div>
 
-<!-- Nav -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- NAV -->
 <nav>
-  <div class="nav-logo">mehroz<span>.</span>dev</div>
+  <div class="nav-logo"><span>//</span> mehroz.dev</div>
   <div class="nav-links">
+    <a href="#about">About</a>
     <a href="#skills">Skills</a>
-    <a href="#project">Project</a>
+    <a href="#projects">Projects</a>
+    <a href="#services">Services</a>
     <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-available">
+    <div class="nav-dot"></div>
+    Available for Internships & Opportunities
   </div>
 </nav>
 
-<!-- Hero -->
-<div class="hero">
-  <div class="hero-tag">Available for remote work</div>
-  <h1>
-    Flutter<br>
-    <span class="line2">Developer</span><br>
-    <span class="line3">&amp; CS Student</span>
-  </h1>
-  <p class="hero-desc">
-    I build clean, scalable mobile apps with Flutter &amp; Firebase.
-    From idea to deployment — Android &amp; iOS from a single codebase.
-    Based in Pakistan, working globally. 🌍
-  </p>
-  <div class="hero-btns">
-    <a href="#contact" class="btn-primary">💬 Hire Me</a>
-    <a href="#project" class="btn-outline">📱 See My Work</a>
+<!-- HERO -->
+<div class="hero" id="about">
+  <div class="hero-left">
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      Open to Internships & Opportunities
+    </div>
+    <h1>
+      <span class="name-first">Mehroz</span>
+      <span class="name-last">Mahmood</span>
+      <span class="role">Flutter Developer & CS Student</span>
+    </h1>
+    <p class="hero-desc">
+      I craft <strong>scalable mobile apps</strong> with Flutter & Firebase — 
+      from pixel-perfect UI to backend integration. 
+      CS student passionate about <strong>AI-powered apps</strong> and building 
+      products that work beautifully on Android & iOS.
+      Passionate about building real products and gaining professional experience. 🚀
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">
+        <span>→</span> Hire Me
+      </a>
+      <a href="#projects" class="btn-ghost">
+        <span>↓</span> View Work
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">1<sup>+</sup></div>
+        <div class="stat-label">App Built</div>
+      </div>
+      <div>
+        <div class="stat-num">500<sup>+</sup></div>
+        <div class="stat-label">Connections</div>
+      </div>
+      <div>
+        <div class="stat-num">4<sup>+</sup></div>
+        <div class="stat-label">Technologies</div>
+      </div>
+    </div>
   </div>
-  <div class="stats">
-    <div>
-      <div class="stat-num">1<span>+</span></div>
-      <div class="stat-label">App Deployed</div>
-    </div>
-    <div>
-      <div class="stat-num">415<span>+</span></div>
-      <div class="stat-label">LinkedIn Connections</div>
-    </div>
-    <div>
-      <div class="stat-num">3<span>+</span></div>
-      <div class="stat-label">Core Technologies</div>
+  <div class="hero-right">
+    <div class="profile-card">
+      <div class="profile-card-glow"></div>
+      <div class="profile-avatar">MM</div>
+      <div class="profile-name">Mehroz Mahmood</div>
+      <div class="profile-role">flutter_developer.dart</div>
+      <div class="profile-tags">
+        <span class="profile-tag">Flutter</span>
+        <span class="profile-tag">Firebase</span>
+        <span class="profile-tag">AI Apps</span>
+        <span class="profile-tag">REST APIs</span>
+        <span class="profile-tag">Dart</span>
+      </div>
+      <div class="profile-location">
+        <span>📍</span> Bahawalnagar, Pakistan · Available Worldwide
+      </div>
+      <div class="profile-stack">
+        <div class="stack-label">// skill confidence</div>
+        <div class="stack-bars">
+          <div class="stack-bar">
+            <div class="stack-bar-name">Flutter</div>
+            <div class="stack-bar-track"><div class="stack-bar-fill blue" style="--w:78%"></div></div>
+          </div>
+          <div class="stack-bar">
+            <div class="stack-bar-name">Firebase</div>
+            <div class="stack-bar-track"><div class="stack-bar-fill purple" style="--w:70%"></div></div>
+          </div>
+          <div class="stack-bar">
+            <div class="stack-bar-name">Dart</div>
+            <div class="stack-bar-track"><div class="stack-bar-fill green" style="--w:75%"></div></div>
+          </div>
+          <div class="stack-bar">
+            <div class="stack-bar-name">REST API</div>
+            <div class="stack-bar-track"><div class="stack-bar-fill orange" style="--w:65%"></div></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<hr class="divider">
+<hr class="section-divider">
 
-<!-- Skills -->
-<section id="skills">
-  <div class="section-label">What I work with</div>
-  <div class="section-title">Technical Skills</div>
-  <div class="skills-grid">
-    <div class="skill-card">
-      <div class="skill-icon">📱</div>
-      <div class="skill-name">Mobile Development</div>
-      <p style="font-size:0.85rem; color:var(--muted); line-height:1.6;">Cross-platform apps for Android &amp; iOS from a single Flutter codebase.</p>
-      <div class="skill-tags">
-        <span class="tag">Flutter</span>
-        <span class="tag">Dart</span>
-        <span class="tag">Material Design</span>
+<!-- SKILLS -->
+<section class="section" id="skills">
+  <div class="reveal">
+    <div class="section-eyebrow">// what i work with</div>
+    <div class="section-heading">Technical Skills</div>
+    <p class="section-sub">A focused stack built for crafting production-ready mobile applications that are fast, beautiful, and scalable.</p>
+  </div>
+  <div class="skills-layout">
+    <div class="skill-block reveal">
+      <div class="skill-block-icon">📱</div>
+      <div class="skill-block-title">Mobile Development</div>
+      <div class="skill-block-desc">Cross-platform apps for Android & iOS from one codebase. Clean architecture, smooth performance, beautiful UI.</div>
+      <div class="skill-pills">
+        <span class="pill">Flutter</span>
+        <span class="pill">Dart</span>
+        <span class="pill">Material Design</span>
+        <span class="pill">Cupertino</span>
       </div>
     </div>
-    <div class="skill-card">
-      <div class="skill-icon">🔥</div>
-      <div class="skill-name">Backend &amp; Database</div>
-      <p style="font-size:0.85rem; color:var(--muted); line-height:1.6;">Real-time data, authentication, and cloud storage with Firebase ecosystem.</p>
-      <div class="skill-tags">
-        <span class="tag">Firebase</span>
-        <span class="tag">Firestore</span>
-        <span class="tag">Auth</span>
-        <span class="tag">REST APIs</span>
+    <div class="skill-block reveal">
+      <div class="skill-block-icon">🔥</div>
+      <div class="skill-block-title">Backend & Cloud</div>
+      <div class="skill-block-desc">Real-time databases, secure authentication, and cloud storage — all without managing your own server.</div>
+      <div class="skill-pills">
+        <span class="pill green">Firebase</span>
+        <span class="pill green">Firestore</span>
+        <span class="pill green">Auth</span>
+        <span class="pill green">REST APIs</span>
       </div>
     </div>
-    <div class="skill-card">
-      <div class="skill-icon">🎨</div>
-      <div class="skill-name">UI/UX Implementation</div>
-      <p style="font-size:0.85rem; color:var(--muted); line-height:1.6;">Clean, responsive interfaces with smooth animations and great user experience.</p>
-      <div class="skill-tags">
-        <span class="tag">UI Design</span>
-        <span class="tag">Animations</span>
-        <span class="tag">Responsive</span>
+    <div class="skill-block reveal">
+      <div class="skill-block-icon">🤖</div>
+      <div class="skill-block-title">AI Integration</div>
+      <div class="skill-block-desc">Building apps powered by artificial intelligence — bringing smart features to mobile through API integration.</div>
+      <div class="skill-pills">
+        <span class="pill purple">Gemini API</span>
+        <span class="pill purple">AI Features</span>
+        <span class="pill purple">API Integration</span>
       </div>
     </div>
-    <div class="skill-card">
-      <div class="skill-icon">⚙️</div>
-      <div class="skill-name">Dev Tools &amp; Practices</div>
-      <p style="font-size:0.85rem; color:var(--muted); line-height:1.6;">Version control, state management, and clean code architecture.</p>
-      <div class="skill-tags">
-        <span class="tag">Git</span>
-        <span class="tag">GitHub</span>
-        <span class="tag">Provider</span>
-        <span class="tag">GetX</span>
+    <div class="skill-block reveal">
+      <div class="skill-block-icon">⚙️</div>
+      <div class="skill-block-title">Dev Tools & Workflow</div>
+      <div class="skill-block-desc">Professional development practices — version control, state management, and clean code architecture.</div>
+      <div class="skill-pills">
+        <span class="pill orange">Git</span>
+        <span class="pill orange">GitHub</span>
+        <span class="pill orange">Provider</span>
+        <span class="pill orange">GetX</span>
+        <span class="pill orange">VS Code</span>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="divider">
+<hr class="section-divider">
 
-<!-- Project -->
-<section id="project">
-  <div class="section-label">Featured Work</div>
-  <div class="section-title">My Project</div>
-  <div class="project-card">
-    <div class="project-header">
-      <div>
-        <div class="project-title">FitTrack 🏋️</div>
-        <div class="project-sub">Flutter · Firebase · REST APIs · Cloud Firestore</div>
+<!-- PROJECTS -->
+<section class="section" id="projects">
+  <div class="reveal">
+    <div class="section-eyebrow">// what i've built</div>
+    <div class="section-heading">Featured Project</div>
+    <p class="section-sub">Real product built from scratch — design, code, and deployment all done solo.</p>
+  </div>
+  <div class="project-showcase reveal">
+    <div class="project-top-bar"></div>
+    <div class="project-body">
+      <div class="project-info">
+        <div class="project-badge-row">
+          <span class="project-badge badge-live">✓ Completed</span>
+          <span class="project-badge badge-flutter">Flutter</span>
+          <span class="project-badge badge-firebase">Firebase</span>
+        </div>
+        <div class="project-title">FitTrack</div>
+        <div class="project-subtitle">// fitness_tracking_app.dart</div>
+        <p class="project-desc">
+          A fully functional fitness tracking mobile app built end-to-end with Flutter and Firebase.
+          Users can register, log workouts, track nutrition, and monitor progress — all synced in real-time
+          with a sleek, modern interface on both Android and iOS.
+        </p>
+        <div class="project-features-list">
+          <div class="project-feature"><div class="feature-dot"></div>Firebase Authentication — secure login & registration</div>
+          <div class="project-feature"><div class="feature-dot"></div>Cloud Firestore — real-time data sync across devices</div>
+          <div class="project-feature"><div class="feature-dot"></div>REST API integration for workout & nutrition data</div>
+          <div class="project-feature"><div class="feature-dot"></div>Provider state management — clean & scalable</div>
+          <div class="project-feature"><div class="feature-dot"></div>Pixel-perfect Material Design UI</div>
+          <div class="project-feature"><div class="feature-dot"></div>Android & iOS compatible from single codebase</div>
+        </div>
       </div>
-      <div class="project-badge">Completed</div>
-    </div>
-    <p class="project-desc">
-      A fully functional fitness tracking mobile application built with Flutter and Firebase.
-      Users can register, log workouts, track nutrition, and monitor their fitness progress
-      — all with real-time sync and a smooth, modern UI.
-    </p>
-    <div class="project-features">
-      <div class="feature-item">Firebase Authentication (login/register)</div>
-      <div class="feature-item">Cloud Firestore real-time database</div>
-      <div class="feature-item">REST API integration for workout data</div>
-      <div class="feature-item">State management with Provider</div>
-      <div class="feature-item">Clean Material Design UI</div>
-      <div class="feature-item">Android &amp; iOS compatible</div>
-    </div>
-    <div class="skill-tags">
-      <span class="tag">Flutter</span>
-      <span class="tag">Dart</span>
-      <span class="tag">Firebase</span>
-      <span class="tag">Firestore</span>
-      <span class="tag">REST API</span>
-      <span class="tag">Provider</span>
+      <div class="project-visual">
+        <div class="tech-item">
+          <div class="tech-icon">📱</div>
+          <div>
+            <div class="tech-name">Flutter & Dart</div>
+            <div class="tech-desc">Cross-platform mobile framework</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🔥</div>
+          <div>
+            <div class="tech-name">Firebase Suite</div>
+            <div class="tech-desc">Auth + Firestore + Storage</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🌐</div>
+          <div>
+            <div class="tech-name">REST APIs</div>
+            <div class="tech-desc">Third-party data integration</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🧩</div>
+          <div>
+            <div class="tech-name">Provider</div>
+            <div class="tech-desc">State management pattern</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🐙</div>
+          <div>
+            <div class="tech-name">GitHub</div>
+            <div class="tech-desc">Version control & open source</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="divider">
+<hr class="section-divider">
 
-<!-- Contact -->
-<section id="contact">
-  <div class="section-label">Get in touch</div>
-  <div class="section-title">Let's Work Together</div>
-  <div class="available">Open to remote internships &amp; freelance work worldwide</div>
-  <div class="contact-grid">
-    <a href="mailto:mehrozmahmood01@gmail.com" class="contact-card">
-      <div class="contact-icon">📧</div>
-      <div>
-        <div class="contact-label">Email</div>
-        <div class="contact-value">mehrozmahmood01@gmail.com</div>
-      </div>
-    </a>
-    <a href="https://www.linkedin.com/in/mehroz-mahmood-52156b324" target="_blank" class="contact-card">
-      <div class="contact-icon">💼</div>
-      <div>
-        <div class="contact-label">LinkedIn</div>
-        <div class="contact-value">mehroz-mahmood</div>
-      </div>
-    </a>
-    <a href="https://github.com/mehrozmahmood" target="_blank" class="contact-card">
-      <div class="contact-icon">🐙</div>
-      <div>
-        <div class="contact-label">GitHub</div>
-        <div class="contact-value">mehrozmahmood</div>
-      </div>
-    </a>
-    <a href="#" class="contact-card">
-      <div class="contact-icon">📍</div>
-      <div>
-        <div class="contact-label">Location</div>
-        <div class="contact-value">Pakistan · Remote Worldwide</div>
-      </div>
-    </a>
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="reveal">
+    <div class="section-eyebrow">// what i offer</div>
+    <div class="section-heading">Services</div>
+    <p class="section-sub">End-to-end mobile development — from design to deployment. I handle the full stack so you don't have to.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card s1 reveal">
+      <span class="service-icon">📱</span>
+      <div class="service-title">Flutter App Development</div>
+      <p class="service-desc">Beautiful, performant cross-platform mobile apps for Android & iOS from a single Flutter codebase. Clean code, scalable architecture.</p>
+    </div>
+    <div class="service-card s2 reveal">
+      <span class="service-icon">🔥</span>
+      <div class="service-title">Firebase Backend</div>
+      <p class="service-desc">Full backend setup with Firebase — Authentication, Firestore database, Cloud Storage, and real-time data sync. No server needed.</p>
+    </div>
+    <div class="service-card s3 reveal">
+      <span class="service-icon">🤖</span>
+      <div class="service-title">AI Integration</div>
+      <p class="service-desc">Add smart AI features to your app — chatbots, recommendations, intelligent search — powered by Gemini and other AI APIs.</p>
+    </div>
+    <div class="service-card s4 reveal">
+      <span class="service-icon">🎨</span>
+      <div class="service-title">UI/UX Design & Build</div>
+      <p class="service-desc">Pixel-perfect, responsive interfaces that feel native on every device. Material Design, smooth animations, great user experience.</p>
+    </div>
+    <div class="service-card s5 reveal">
+      <span class="service-icon">🌐</span>
+      <div class="service-title">REST API Integration</div>
+      <p class="service-desc">Connect your app to any third-party service — payment gateways, maps, social logins, data feeds. Seamless API integration.</p>
+    </div>
   </div>
 </section>
 
+<hr class="section-divider">
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="reveal">
+    <div class="section-eyebrow">// let's connect</div>
+    <div class="section-heading">Get In Touch</div>
+    <p class="section-sub">Looking for a Flutter developer for your project or internship? Let's talk — I respond fast.</p>
+  </div>
+  <div class="contact-layout">
+    <div class="contact-left reveal">
+      <h3>Ready to build something great together?</h3>
+      <p>Whether it's an internship, a junior role, or a freelance project — I'm open to opportunities everywhere. Drop me a message and let's make it happen.</p>
+      <div class="contact-links">
+        <a href="mailto:mehrozmahmood01@gmail.com" class="contact-link">
+          <div class="contact-link-icon icon-email">📧</div>
+          <div>
+            <div class="contact-link-label">// email</div>
+            <div class="contact-link-value">mehrozmahmood01@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/mehroz-mahmood-52156b324" target="_blank" class="contact-link">
+          <div class="contact-link-icon icon-linkedin">💼</div>
+          <div>
+            <div class="contact-link-label">// linkedin</div>
+            <div class="contact-link-value">mehroz-mahmood-52156b324</div>
+          </div>
+        </a>
+        <a href="https://github.com/mehrozmahmood293" target="_blank" class="contact-link">
+          <div class="contact-link-icon icon-github">🐙</div>
+          <div>
+            <div class="contact-link-label">// github</div>
+            <div class="contact-link-value">mehrozmahmood293</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="contact-right reveal">
+      <h4>Quick Info</h4>
+      <div class="info-row">
+        <span class="info-key">AVAILABILITY</span>
+        <span class="info-badge">Open to Work</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">WORK TYPE</span>
+        <span class="info-val">On-site / Remote / Hybrid</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">TIMEZONE</span>
+        <span class="info-val">PKT (UTC+5) · Flexible</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">ROLE</span>
+        <span class="info-val">Internship / Junior Role</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">LANGUAGES</span>
+        <span class="info-val">English · Urdu</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">RESPONSE TIME</span>
+        <span class="info-val">Within 24 hours</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <p>Built by Mehroz Mahmood · Flutter Developer · 2025</p>
+  <div class="footer-inner">
+    <div class="footer-logo"><span>//</span> mehroz.dev · 2025</div>
+    <div>Flutter Developer · Pakistan · Open to Opportunities</div>
+    <div>Built with ❤️ & lots of ☕</div>
+  </div>
 </footer>
 
+<script>
+document.querySelectorAll('a,button,.skill-block,.service-card,.project-showcase,.tech-item,.contact-link').forEach(el=>{
+});
+
+// Scroll reveal
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// Nav active state
+const sections=document.querySelectorAll('section,div[id]');
+const navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{
+    if(window.scrollY>=s.offsetTop-100)current=s.id;
+  });
+  navLinks.forEach(a=>{
+    a.style.color=a.getAttribute('href')==='#'+current?'var(--text)':'';
+  });
+});
+</script>
 </body>
 </html>
